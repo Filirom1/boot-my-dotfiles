@@ -28,7 +28,7 @@ node default {
     managehome => true,
   }
 
-  # ensure dotfiles are present
+  # ensure dotfiles are present
   $home_dir="/home/${user}"
   vcsrepo { "${home_dir}/":
     ensure   => present,
@@ -36,7 +36,7 @@ node default {
     source => 'https://github.com/Filirom1/dotfiles.vim',
   }
 
-  #ensure vundle is installed
+  # ensure vundle is installed
   $vim_dir = "${home_dir}/.vim"
   $bundle_dir = "${vim_dir}/bundle"
   $vundle_dir = "${bundle_dir}/Vundle.vim"
