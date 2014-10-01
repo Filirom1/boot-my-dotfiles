@@ -24,7 +24,8 @@ node default {
 
   # ensure user is present
   user { "${user}":
-    ensure => present
+    ensure => present,
+    managehome => true,
   }
 
   # ensure dotfiles are present
