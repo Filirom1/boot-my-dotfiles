@@ -5,6 +5,7 @@ node default {
   # standard packages
   package { "strace": ensure => "latest" }
   package { "sudo":   ensure => "latest" }
+  package { "git":   ensure => "latest" }
 
   # os specific packages
   case $::osfamily {
