@@ -29,8 +29,16 @@ node default {
     managehome => true,
   }
 
-  # ensure dotfiles are present
+  # clean home dir
   $home_dir="/home/${user}"
+  file {"$home_dir":
+    ensure => absent,
+    recurse => true,
+    purge => true,
+    force => true,
+  }
+
+  # ensure dotfiles are present
   vcsrepo { "${home_dir}/":
     ensure   => present,
     provider => git,
