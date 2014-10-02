@@ -42,7 +42,7 @@ node default {
   vcsrepo { "${home_dir}/":
     ensure   => present,
     provider => git,
-    source => 'https://github.com/Filirom1/dotfiles.vim',
+    source => 'https://github.com/Filirom1/dotfiles.git',
   }
 
   # ensure vundle is installed
@@ -55,7 +55,7 @@ node default {
   vcsrepo { "$vundle_dir":
     ensure   => present,
     provider => git,
-    source => 'https://github.com/gmarik/Vundle.vim',
+    source => 'https://github.com/gmarik/Vundle.git',
   } ->
   exec { 'BundleInstall':
     command => "sudo ${romain} vim +PluginInstall +qall",
