@@ -54,4 +54,14 @@ node default {
     refreshonly => true,
     path => $::path,
   }
+
+  # install jsontool
+  case $::osfamily {
+     'Archlinux': {
+       package { "jsontool": ensure => "latest" }
+     }
+     default: {
+       package { "jsontool": ensure => "latest", provider => 'npm' }
+     }
+  }
 }
