@@ -48,7 +48,7 @@ node default {
   # ensure vundle is installed
   $vim_dir = "${home_dir}/.vim"
   $bundle_dir = "${vim_dir}/bundle"
-  $vundle_dir = "${bundle_dir}/Vundle.vim"
+  $vundle_dir = "${bundle_dir}/Vundle.git"
   file { [$vim_dir, $bundle_dir]:
     ensure => 'directory',
   } ->
