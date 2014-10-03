@@ -1,67 +1,59 @@
-node default {
-  include nodejs
-  $user='romain'
+class dotfiles(
+  $user = 'romain'
+) inherits dotfiles::params {
+  include epel
+  require nodejs
+
+  Class['epel'] -> Class['nodejs']
 
   # standard packages
   package { "strace": ensure => "latest" }
   package { "sudo":   ensure => "latest" }
   package { "git":   ensure => "latest" }
-
-  # os specific packages
-  case $::osfamily {
-     'Archlinux': {
-       package { "gvim": ensure => "latest" }
-     }
-     'redhat': {
-       package { "vim-enhanced": ensure => "latest" }
-     }
-     'debian': {
-       package { "vim-gnome": ensure => "latest" }
-     }
-     default: {
-       fail("${::operatingsystem} not supported.")
-     }
-  }
+  package { $dotfiles::params::vim_pkg:   ensure => "latest" }
 
   # ensure user is present
-  user { "${user}":
-    ensure => present,
-    managehome => true,
-  }
+  user { $user:
+    ensure => present
+  } ->
 
-  # ensure dotfiles are present
-  $home_dir="/home/${user}"
-  vcsrepo { "${home_dir}/":
-    ensure   => present,
-    provider => git,
-    source => 'https://github.com/Filirom1/dotfiles.vim',
-  }
-
-  # ensure vundle is installed
-  $vim_dir = "${home_dir}/.vim"
-  $bundle_dir = "${vim_dir}/bundle"
-  $vundle_dir = "${bundle_dir}/Vundle.vim"
-  file { [$vim_dir, $bundle_dir]:
+  file { $dotfiles::params::home_dir:
     ensure => 'directory',
   } ->
-  vcsrepo { "$vundle_dir":
+
+  # ensure dotfiles are present
+  vcsrepo { $dotfiles::params::home_dir:
     ensure   => present,
     provider => git,
-    source => 'https://github.com/gmarik/Vundle.vim',
+    source => 'https://github.com/Filirom1/dotfiles.git',
   } ->
+
+  # ensure vundle is installed
+  file { [$dotfiles::params::vim_dir, $dotfiles::params::bundle_dir]:
+    ensure => 'directory',
+  } ->
+
+  vcsrepo { "$dotfiles::params::vundle_dir":
+    ensure   => present,
+    provider => git,
+    source => 'https://github.com/gmarik/Vundle.git',
+  } ->
+
   exec { 'BundleInstall':
     command => "sudo ${romain} vim +PluginInstall +qall",
     refreshonly => true,
     path => $::path,
   }
 
+
   # install jsontool
   case $::osfamily {
-     'Archlinux': {
-       package { "jsontool": ensure => "latest" }
-     }
-     default: {
-       package { "jsontool": ensure => "latest", provider => 'npm' }
-     }
+    'Archlinux': {
+      package { "jsontool": ensure => "latest" }
+    }
+    default: {
+      package { "jsontool": ensure => "latest", provider => 'npm' }
+    }
   }
+
 }
